@@ -6,7 +6,6 @@
                     <v-flex xs12 sm6 offset-sm3>
                         <v-flex>
                             <v-select
-                                    v-bind:items="alertsInfo[0].exchanges"
                                     v-model="exchange"
                                     label="Exhanges"
                                     required

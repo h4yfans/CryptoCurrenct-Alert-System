@@ -1,12 +1,11 @@
 <template>
     <div>
         <v-navigation-drawer
-                persistent
+                fixed
                 clipped
-                enable-resize-watcher
                 v-model="drawer"
-                app>
-
+                app
+        >
             <v-list dense>
                 <v-list-tile v-for="item in items" :key="item.text" :to="item.path">
                     <v-list-tile-action>
@@ -18,19 +17,17 @@
                         </v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
+
                 <v-subheader class="mt-3 grey--text text--darken-1">Account</v-subheader>
 
-                <v-list-tile @click="">
+                <v-list-tile v-for="account in accounts" :key="account.text" :to="account.path">
                     <v-list-tile-action>
-                        <v-icon color="grey darken-1">settings</v-icon>
+                        <v-icon color="grey darken-1">{{ account.icon }}</v-icon>
                     </v-list-tile-action>
-                    <v-list-tile-title class="grey--text text--darken-1">Settings</v-list-tile-title>
+                    <v-list-tile-title class="grey--text text--darken-1">{{ account.text }}</v-list-tile-title>
                 </v-list-tile>
             </v-list>
-
         </v-navigation-drawer>
-
-
         <v-toolbar color="red" dense fixed clipped-left app>
             <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
                 <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
@@ -61,8 +58,8 @@
                 {icon: 'alarm_add', text: 'Add Alert', path: 'add-alert'},
                 {icon: 'near_me', text: 'My Alerts', path: 'my-alerts'},
             ],
-            items2: [
-                {icon: 'settings', text: 'Settings'},
+            accounts: [
+                {icon: 'settings', text: 'Settings', path: 'edit-profile'},
             ]
         }),
 

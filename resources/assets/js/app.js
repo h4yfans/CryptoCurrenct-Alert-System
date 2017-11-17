@@ -1,5 +1,3 @@
-require('./bootstrap');
-
 window.Vue = require('vue');
 
 import Vuex from 'vuex'
@@ -12,6 +10,7 @@ import Index from './components/home/Index.vue'
 import MyAlerts from './components/home/Alert/MyAlerts.vue'
 import AddAlert from './components/home/Create/AddAlert.vue'
 import EditAlert from './components/home/Edit/EditAlert.vue'
+import EditProfile from './components/home/Edit/EditProfile.vue'
 
 Vue.use(Vuex)
 Vue.use(Vuetify)
@@ -24,6 +23,7 @@ const routes = [
     {title: 'My Alerts', icon: 'home', path: '/my-alerts', component: MyAlerts},
     {title: 'Add Alert', icon: 'add', path: '/add-alert', component: AddAlert},
     {title: 'Edit Alert', icon: 'edit', path: '/edit-alert', component: EditAlert},
+    {title: 'Edit Profile', icon: 'edit', path: '/edit-profile', component: EditProfile},
 ]
 
 const router = new VueRouter({
