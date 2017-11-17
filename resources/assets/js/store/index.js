@@ -1,10 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VueResource from 'vue-resource';
 
 Vue.use(Vuex)
+Vue.use(VueResource)
 
 export const store = new Vuex.Store({
     state: {
+        isAuth: null,
         alerts: [
             {id: 1, currency: 'BTC/USD', exchange: 'Bittrex', price: '1200 '},
             {id: 2, currency: 'BTC/ETH', exchange: 'Bittrex', price: '0.0000065'},
@@ -22,14 +25,36 @@ export const store = new Vuex.Store({
             currencies: [{id: 1, currency: 'BTC/USD'}, {id: 2, currency: 'BTC/ETH'}, {id: 3, currency: 'BTC/XRP'}]
         },]
     },
+    actions: {
+        checkAuth({commit}) {
+            Vue.http.get('/check-auth')
+            .then((response) => {
+                commit('checkAuth', response.data)
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        }
+    },
+    mutations: {
+        checkAuth(state, payload) {
+            if (payload) {
+                state.isAuth = true;
+            }
+
+        }
+    },
     getters: { // always return something
         alerts(state) {
             return state.alerts;
         },
-        alertsInfo(state){
+        alertsInfo(state) {
             return state.alertsInfo;
+        },
+        checkAuth(state){
+            return state.isAuth;
         }
     },
-    mutations: {},
-    actions: {}
+
+
 })

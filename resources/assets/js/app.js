@@ -11,10 +11,12 @@ import MyAlerts from './components/home/Alert/MyAlerts.vue'
 import AddAlert from './components/home/Create/AddAlert.vue'
 import EditAlert from './components/home/Edit/EditAlert.vue'
 import EditProfile from './components/home/Edit/EditProfile.vue'
+import Login from './components/home/Auth/Login.vue'
 
 Vue.use(Vuex)
 Vue.use(Vuetify)
 Vue.use(VueRouter)
+
 
 Vue.component('sidebar', Sidebar);
 Vue.component('home', Index);
@@ -24,11 +26,14 @@ const routes = [
     {title: 'Add Alert', icon: 'add', path: '/add-alert', component: AddAlert},
     {title: 'Edit Alert', icon: 'edit', path: '/edit-alert', component: EditAlert},
     {title: 'Edit Profile', icon: 'edit', path: '/edit-profile', component: EditProfile},
+    {title: 'Login', icon: 'login', path: '/login', component: Login},
 ]
 
 const router = new VueRouter({
     routes,
-    linkActiveClass: 'list__title--active'
+    linkActiveClass: 'list__title--active',
+    mode: 'history'
+
 })
 
 const app = new Vue({
@@ -44,6 +49,7 @@ const app = new Vue({
         if (this.$route.path == '/' && this.$route.path == '/login') {
             this.$router.push('my-alerts');
         }
+        this.$store.dispatch('checkAuth');
     }
 });
 

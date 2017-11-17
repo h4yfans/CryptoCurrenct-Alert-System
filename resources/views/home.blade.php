@@ -10,7 +10,6 @@
     <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
 </head>
 <body>
-
 <div id="app">
     <home title="{{config('app.name', 'Laravel')}}"
           user_name="Morty"
