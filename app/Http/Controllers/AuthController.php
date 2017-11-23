@@ -8,4 +8,9 @@ class AuthController extends Controller
     {
         return response()->json(auth()->check());
     }
+
+    public function getAuthInfo()
+    {
+        return response()->json(auth()->user());
+    }
 }

@@ -18,6 +18,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::get('/check-auth', 'AuthController@checkAuth');
+    Route::get('/get-user-info', 'AuthController@getAuthInfo');
 
 });
 Auth::routes();

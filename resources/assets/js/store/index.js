@@ -8,6 +8,7 @@ Vue.use(VueResource)
 export const store = new Vuex.Store({
     state: {
         isAuth: null,
+        email: '',
         alerts: [
             {id: 1, currency: 'BTC/USD', exchange: 'Bittrex', price: '1200 '},
             {id: 2, currency: 'BTC/ETH', exchange: 'Bittrex', price: '0.0000065'},
@@ -29,19 +30,33 @@ export const store = new Vuex.Store({
         checkAuth({commit}) {
             Vue.http.get('/check-auth')
             .then((response) => {
-                commit('checkAuth', response.data)
+                commit('CHECK_AUTH', response.data)
             })
             .catch((error) => {
                 console.log(error)
             });
+        },
+        getUserInfo({commit}) {
+            Vue.http.get('/get-user-info')
+            .then((response) => {
+                commit('SET_EMAIL', response.body)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
         }
     },
     mutations: {
-        checkAuth(state, payload) {
+        CHECK_AUTH(state, payload) {
             if (payload) {
                 state.isAuth = true;
             }
-
+        },
+        SET_EMAIL(state, payload) {
+            state.email = payload.email
+        },
+        UPDATE_EMAIL(state, payload){
+            state.email = payload;
         }
     },
     getters: { // always return something
@@ -51,8 +66,11 @@ export const store = new Vuex.Store({
         alertsInfo(state) {
             return state.alertsInfo;
         },
-        checkAuth(state){
+        checkAuth(state) {
             return state.isAuth;
+        },
+        email(state) {
+            return state.email;
         }
     },
 

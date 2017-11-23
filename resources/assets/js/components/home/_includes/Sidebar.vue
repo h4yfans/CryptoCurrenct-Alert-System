@@ -67,7 +67,7 @@
             ],
             accounts: [
                 {icon: 'settings', text: 'Settings', path: 'edit-profile'}
-                ]
+            ]
         }),
         computed: {
             isAuth() {

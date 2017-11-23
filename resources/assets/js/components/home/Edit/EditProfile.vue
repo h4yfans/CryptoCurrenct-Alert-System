@@ -5,32 +5,38 @@
                 <v-layout row wrap>
                     <v-flex xs12 sm6 offset-sm3>
                         <v-flex>
-                            <v-select
-                                    v-bind:items="states"
+                            <v-text-field
                                     label="Mail"
-                                    autocomplete
+                                    name="Mail"
+                                    id="mail"
+                                    v-model="email"
+                                    required
+                                    :type="password"
                                     append-icon="chat_bubble"
-                            ></v-select>
+                                    :rules="[validEmail]"
+                            ></v-text-field>
                         </v-flex>
                         <v-flex>
-                            <v-select
-                                    v-bind:items="password"
+                            <v-text-field
+                                    v-model="password"
                                     label="Password"
-                                    autocomplete
+                                    :type="'password'"
                                     append-icon="fingerprint"
-                            ></v-select>
+                                    required
+                            ></v-text-field>
                         </v-flex>
                         <v-flex>
-                            <v-select
-                                    v-bind:items="repassword"
+                            <v-text-field
+                                    v-model="repeatPassword"
                                     label="Password"
-                                    autocomplete
-                                    append-icon="fingerprint
-"
-                            ></v-select>
+                                    :type="'password'"
+                                    append-icon="fingerprint"
+                                    :rules="[comparePasswords]"
+                            ></v-text-field>
                         </v-flex>
                         <v-flex right>
-                            <v-btn color="primary" dark right>Update Profile</v-btn>
+                            <v-btn color="primary" dark right @click="getEmail()">Update Profile</v-btn>
+                            {{ userMail }}
                         </v-flex>
                     </v-flex>
                 </v-layout>
@@ -43,24 +49,35 @@
     export default {
         data() {
             return {
-                price : {
-                    props: Integer
+                userMail: '',
+                password: '',
+                repeatPassword: ''
+            }
+        },
+        mounted() {
+            this.$store.dispatch('getUserInfo');
+            console.log(this.$store.getters.email)
+        },
+        methods: {
+            getEmail() {
+                console.log(this.$store.getters.email);
+            }
+        },
+        computed: {
+            comparePasswords() {
+                return this.password !== this.repeatPassword ? 'Password do not match' : '';
+            },
+            validEmail() {
+                const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                return pattern.test(this.email) || 'Invalid e-mail.'
+            },
+            email: {
+                get() {
+                    return this.$store.state.email;
                 },
-                states: [
-                    'Alabama', 'Alaska', 'American Samoa', 'Arizona',
-                    'Arkansas', 'California', 'Colorado', 'Connecticut',
-                    'Delaware', 'District of Columbia', 'Federated States of Micronesia',
-                ],
-                currency: [
-                    'BTC/USD',
-                    'ETH/USD',
-                    'ETH/BTC',
-                    'XRP/BTC',
-                    'NEO/BTC',
-                    'OMG/BTC',
-                    'VTC/BTC',
-                    'DOGE/BTC'
-                ]
+                set(mail) {
+                    this.$store.commit('UPDATE_EMAIL', mail)
+                }
             }
         }
     }

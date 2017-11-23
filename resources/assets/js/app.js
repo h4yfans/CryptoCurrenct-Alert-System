@@ -32,8 +32,6 @@ const routes = [
 const router = new VueRouter({
     routes,
     linkActiveClass: 'list__title--active',
-    mode: 'history'
-
 })
 
 const app = new Vue({

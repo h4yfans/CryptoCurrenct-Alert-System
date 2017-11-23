@@ -11826,9 +11826,7 @@ var routes = [{ title: 'My Alerts', icon: 'home', path: '/my-alerts', component:
 
 var router = new __WEBPACK_IMPORTED_MODULE_2_vue_router__["a" /* default */]({
     routes: routes,
-    linkActiveClass: 'list__title--active',
-    mode: 'history'
-
+    linkActiveClass: 'list__title--active'
 });
 
 var app = new Vue({
@@ -31902,6 +31900,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vue_
 var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     state: {
         isAuth: null,
+        email: '',
         alerts: [{ id: 1, currency: 'BTC/USD', exchange: 'Bittrex', price: '1200 ' }, { id: 2, currency: 'BTC/ETH', exchange: 'Bittrex', price: '0.0000065' }, { id: 3, currency: 'BTC/XRP', exchange: 'Bittrex', price: '0.00054 ' }, { id: 4, currency: 'BTC/NEO', exchange: 'Bittrex', price: '0.0123658 ' }, { id: 5, currency: 'BTC/OMG', exchange: 'Bittrex', price: '0.1512564 ' }, { id: 6, currency: 'BTC/STRAT', exchange: 'Bittrex', price: '0.00012 ' }, { id: 7, currency: 'BTC/XLM', exchange: 'Bittrex', price: '0.004412 ' }, { id: 8, currency: 'BTC/BCC', exchange: 'Bittrex', price: '0.313412 ' }, { id: 9, currency: 'BTC/VIA', exchange: 'Bittrex', price: '0.499312 ' }],
         alertsInfo: [{
             id: 1,
@@ -31914,17 +31913,32 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
             var commit = _ref.commit;
 
             __WEBPACK_IMPORTED_MODULE_0_vue___default.a.http.get('/check-auth').then(function (response) {
-                commit('checkAuth', response.data);
+                commit('CHECK_AUTH', response.data);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        getUserInfo: function getUserInfo(_ref2) {
+            var commit = _ref2.commit;
+
+            __WEBPACK_IMPORTED_MODULE_0_vue___default.a.http.get('/get-user-info').then(function (response) {
+                commit('SET_EMAIL', response.body);
             }).catch(function (error) {
                 console.log(error);
             });
         }
     },
     mutations: {
-        checkAuth: function checkAuth(state, payload) {
+        CHECK_AUTH: function CHECK_AUTH(state, payload) {
             if (payload) {
                 state.isAuth = true;
             }
+        },
+        SET_EMAIL: function SET_EMAIL(state, payload) {
+            state.email = payload.email;
+        },
+        UPDATE_EMAIL: function UPDATE_EMAIL(state, payload) {
+            state.email = payload;
         }
     },
     getters: {
@@ -31937,6 +31951,9 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
         },
         checkAuth: function checkAuth(state) {
             return state.isAuth;
+        },
+        email: function email(state) {
+            return state.email;
         }
     }
 
@@ -35116,16 +35133,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            price: {
-                props: Integer
-            },
-            states: ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia'],
-            currency: ['BTC/USD', 'ETH/USD', 'ETH/BTC', 'XRP/BTC', 'NEO/BTC', 'OMG/BTC', 'VTC/BTC', 'DOGE/BTC']
+            userMail: '',
+            password: '',
+            repeatPassword: ''
         };
+    },
+    mounted: function mounted() {
+        this.$store.dispatch('getUserInfo');
+        console.log(this.$store.getters.email);
+    },
+
+    methods: {
+        getEmail: function getEmail() {
+            console.log(this.$store.getters.email);
+        }
+    },
+    computed: {
+        comparePasswords: function comparePasswords() {
+            return this.password !== this.repeatPassword ? 'Password do not match' : '';
+        },
+        validEmail: function validEmail() {
+            var pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return pattern.test(this.email) || 'Invalid e-mail.';
+        },
+
+        email: {
+            get: function get() {
+                return this.$store.state.email;
+            },
+            set: function set(mail) {
+                this.$store.commit('UPDATE_EMAIL', mail);
+            }
+        }
     }
 });
 
@@ -35159,12 +35208,22 @@ var render = function() {
                       _c(
                         "v-flex",
                         [
-                          _c("v-select", {
+                          _c("v-text-field", {
                             attrs: {
-                              items: _vm.states,
                               label: "Mail",
-                              autocomplete: "",
-                              "append-icon": "chat_bubble"
+                              name: "Mail",
+                              id: "mail",
+                              required: "",
+                              type: _vm.password,
+                              "append-icon": "chat_bubble",
+                              rules: [_vm.validEmail]
+                            },
+                            model: {
+                              value: _vm.email,
+                              callback: function($$v) {
+                                _vm.email = $$v
+                              },
+                              expression: "email"
                             }
                           })
                         ],
@@ -35174,12 +35233,19 @@ var render = function() {
                       _c(
                         "v-flex",
                         [
-                          _c("v-select", {
+                          _c("v-text-field", {
                             attrs: {
-                              items: _vm.password,
                               label: "Password",
-                              autocomplete: "",
-                              "append-icon": "fingerprint"
+                              type: "password",
+                              "append-icon": "fingerprint",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.password,
+                              callback: function($$v) {
+                                _vm.password = $$v
+                              },
+                              expression: "password"
                             }
                           })
                         ],
@@ -35189,12 +35255,19 @@ var render = function() {
                       _c(
                         "v-flex",
                         [
-                          _c("v-select", {
+                          _c("v-text-field", {
                             attrs: {
-                              items: _vm.repassword,
                               label: "Password",
-                              autocomplete: "",
-                              "append-icon": "fingerprint\n"
+                              type: "password",
+                              "append-icon": "fingerprint",
+                              rules: [_vm.comparePasswords]
+                            },
+                            model: {
+                              value: _vm.repeatPassword,
+                              callback: function($$v) {
+                                _vm.repeatPassword = $$v
+                              },
+                              expression: "repeatPassword"
                             }
                           })
                         ],
@@ -35208,9 +35281,19 @@ var render = function() {
                           _c(
                             "v-btn",
                             {
-                              attrs: { color: "primary", dark: "", right: "" }
+                              attrs: { color: "primary", dark: "", right: "" },
+                              on: {
+                                click: function($event) {
+                                  _vm.getEmail()
+                                }
+                              }
                             },
                             [_vm._v("Update Profile")]
+                          ),
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(_vm.userMail) +
+                              "\n                    "
                           )
                         ],
                         1
