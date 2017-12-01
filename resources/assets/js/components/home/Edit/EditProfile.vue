@@ -4,6 +4,9 @@
             <v-container fluid>
                 <v-layout row wrap>
                     <v-flex xs12 sm6 offset-sm3>
+                        <v-alert v-if="showNotification" color="info" :value="true">
+                            {{ informationText }}
+                        </v-alert>
                         <v-flex>
                             <v-text-field
                                     label="Mail"
@@ -35,8 +38,7 @@
                             ></v-text-field>
                         </v-flex>
                         <v-flex right>
-                            <v-btn color="primary" dark right @click="getEmail()">Update Profile</v-btn>
-                            {{ userMail }}
+                            <v-btn color="primary" :disabled="!button" dark right @click="changeUserInfo">Update Profile</v-btn>
                         </v-flex>
                     </v-flex>
                 </v-layout>
@@ -49,19 +51,17 @@
     export default {
         data() {
             return {
-                userMail: '',
                 password: '',
                 repeatPassword: ''
             }
         },
+        methods: {
+            changeUserInfo() {
+                this.$store.dispatch('changeAuthInfo', {email: this.email, password: this.password})
+            }
+        },
         mounted() {
             this.$store.dispatch('getUserInfo');
-            console.log(this.$store.getters.email)
-        },
-        methods: {
-            getEmail() {
-                console.log(this.$store.getters.email);
-            }
         },
         computed: {
             comparePasswords() {
@@ -71,9 +71,18 @@
                 const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                 return pattern.test(this.email) || 'Invalid e-mail.'
             },
+            button(){
+              return this.validEmail && (this.comparePasswords == '');
+            },
+            informationText(){
+                return this.$store.getters.informationText;
+            },
+            showNotification(){
+             return this.$store.getters.showNotification;
+            },
             email: {
                 get() {
-                    return this.$store.state.email;
+                    return this.$store.getters.email;
                 },
                 set(mail) {
                     this.$store.commit('UPDATE_EMAIL', mail)

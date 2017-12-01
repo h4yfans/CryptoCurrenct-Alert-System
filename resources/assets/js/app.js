@@ -17,6 +17,7 @@ Vue.use(Vuex)
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.head.querySelector('meta[name="csrf-token"]').content
 
 Vue.component('sidebar', Sidebar);
 Vue.component('home', Index);

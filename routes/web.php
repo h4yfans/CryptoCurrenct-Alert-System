@@ -19,6 +19,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/check-auth', 'AuthController@checkAuth');
     Route::get('/get-user-info', 'AuthController@getAuthInfo');
+    Route::post('/change-auth-info', 'AuthController@setAuthInfo');
 
 });
 Auth::routes();
