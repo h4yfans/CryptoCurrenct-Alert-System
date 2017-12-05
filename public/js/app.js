@@ -31997,17 +31997,12 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vue_
 
 var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     state: {
-        isAuth: null,
-        email: '',
-        showNotification: false,
-        informationText: '',
-        alertColor: '',
-        alerts: [{ id: 1, currency: 'BTC/USD', exchange: 'Bittrex', price: '1200 ' }, { id: 2, currency: 'BTC/ETH', exchange: 'Bittrex', price: '0.0000065' }, { id: 3, currency: 'BTC/XRP', exchange: 'Bittrex', price: '0.00054 ' }, { id: 4, currency: 'BTC/NEO', exchange: 'Bittrex', price: '0.0123658 ' }, { id: 5, currency: 'BTC/OMG', exchange: 'Bittrex', price: '0.1512564 ' }, { id: 6, currency: 'BTC/STRAT', exchange: 'Bittrex', price: '0.00012 ' }, { id: 7, currency: 'BTC/XLM', exchange: 'Bittrex', price: '0.004412 ' }, { id: 8, currency: 'BTC/BCC', exchange: 'Bittrex', price: '0.313412 ' }, { id: 9, currency: 'BTC/VIA', exchange: 'Bittrex', price: '0.499312 ' }],
-        alertsInfo: [{
-            id: 1,
-            exchanges: [{ id: 1, name: 'Bittrex' }, { id: 2, name: 'Poloniex' }],
-            currencies: [{ id: 1, currency: 'BTC/USD' }, { id: 2, currency: 'BTC/ETH' }, { id: 3, currency: 'BTC/XRP' }]
-        }]
+        isAuth: null, //check if the user is auth
+        email: '', //user email
+        showNotification: false, //show the alert section in setting component
+        informationText: '', // dynamic information text
+        alertColor: '', // alerts color
+        currencies: [] // currencies
     },
     actions: {
         checkAuth: function checkAuth(_ref) {
@@ -32032,7 +32027,6 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
         changeAuthInfo: function changeAuthInfo(_ref3, payload) {
             var commit = _ref3.commit;
 
-
             __WEBPACK_IMPORTED_MODULE_0_vue___default.a.http.post('/change-auth-info', { email: payload.email, password: payload.password }).then(function (response) {
                 if (response.status) {
                     console.log('success');
@@ -32048,6 +32042,14 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
             }).catch(function (error) {
                 console.log(error);
             });
+        },
+        getCurrencies: function getCurrencies(_ref4) {
+            var commit = _ref4.commit;
+
+            __WEBPACK_IMPORTED_MODULE_0_vue___default.a.http.get('https://bittrex.com/api/v1.1/public/getmarketsummaries').then(function (response) {
+                console.log(response);
+                commit('SET_CURRENCIES', response.body.result);
+            }).catch(function (error) {});
         }
     },
     mutations: {
@@ -32072,6 +32074,11 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
             } else {
                 state.alertColor = 'error';
             }
+        },
+        SET_CURRENCIES: function SET_CURRENCIES(state, payload) {
+            payload.map(function (x) {
+                return state.currencies.push(x.MarketName);
+            });
         }
     },
     getters: {
@@ -32093,6 +32100,9 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
         },
         showNotification: function showNotification(state) {
             return state.showNotification;
+        },
+        currencies: function currencies(state) {
+            return state.currencies;
         }
     }
 
@@ -34790,13 +34800,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            exchange: '',
-            currency: '',
-            price: '',
-            test: ['kaan', 'sevde']
+            exchanges: ['Bittrex']
         };
     },
-
 
     methods: {
         alertsInfo: function alertsInfo() {
@@ -34804,7 +34810,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     created: function created() {
-        console.log(this.$store.getters.alertsInfo);
+        this.$store.dispatch('getCurrencies');
+    },
+
+    computed: {
+        currencies: function currencies() {
+            return this.$store.getters.currencies;
+        }
     }
 });
 
@@ -34843,14 +34855,8 @@ var render = function() {
                               label: "Exhanges",
                               required: "",
                               autocomplete: "",
-                              "append-icon": "trending_up"
-                            },
-                            model: {
-                              value: _vm.exchange,
-                              callback: function($$v) {
-                                _vm.exchange = $$v
-                              },
-                              expression: "exchange"
+                              "append-icon": "trending_up",
+                              items: _vm.exchanges
                             }
                           })
                         ],
@@ -34865,14 +34871,8 @@ var render = function() {
                               label: "Currency",
                               required: "",
                               autocomplete: "",
-                              "append-icon": "monetization_on"
-                            },
-                            model: {
-                              value: _vm.currency,
-                              callback: function($$v) {
-                                _vm.currency = $$v
-                              },
-                              expression: "currency"
+                              "append-icon": "monetization_on",
+                              items: _vm.currencies
                             }
                           })
                         ],

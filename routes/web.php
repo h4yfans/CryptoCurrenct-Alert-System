@@ -12,7 +12,7 @@
 */
 
 
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/', function () {
         return view('home');
     });

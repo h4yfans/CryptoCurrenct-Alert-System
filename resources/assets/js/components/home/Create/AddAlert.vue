@@ -6,20 +6,20 @@
                     <v-flex xs12 sm6 offset-sm3>
                         <v-flex>
                             <v-select
-                                    v-model="exchange"
                                     label="Exhanges"
                                     required
                                     autocomplete
                                     append-icon="trending_up"
+                                    v-bind:items="exchanges"
                             ></v-select>
                         </v-flex>
                         <v-flex>
                             <v-select
-                                    v-model="currency"
                                     label="Currency"
                                     required
                                     autocomplete
                                     append-icon="monetization_on"
+                                    v-bind:items="currencies"
                             ></v-select>
                         </v-flex>
                         <v-flex>
@@ -43,20 +43,22 @@
     export default {
         data() {
             return {
-                exchange: '',
-                currency: '',
-                price: '',
-                test :['kaan','sevde']
+                exchanges: ['Bittrex']
             }
         },
-
         methods: {
             alertsInfo() {
                 return this.$store.getters.alertsInfo;
             }
         },
         created() {
-            console.log(this.$store.getters.alertsInfo);
+            this.$store.dispatch('getCurrencies');
+        },
+        computed: {
+            currencies(){
+                    return this.$store.getters.currencies;
+
+            }
         }
     }
 </script>
