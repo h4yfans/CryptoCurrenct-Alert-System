@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Validator;
+use Validator;
 
 class AuthController extends Controller
 {
@@ -23,11 +23,11 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'email'    => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:4',
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors());
+            return response()->json(['status' => false, 'message'=> 'Something went wrong!']);
         }
 
         $authUser              = auth()->user();
@@ -36,6 +36,6 @@ class AuthController extends Controller
         $updatedUser->password = bcrypt($request->password);
         $updatedUser->save();
 
-        return response()->json(['status' => true]);
+        return response()->json(['status' => true, 'message'=> 'Profile successfully updated!']);
     }
 }

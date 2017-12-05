@@ -11,6 +11,7 @@ export const store = new Vuex.Store({
         email: '',
         showNotification: false,
         informationText: '',
+        alertColor: '',
         alerts: [
             {id: 1, currency: 'BTC/USD', exchange: 'Bittrex', price: '1200 '},
             {id: 2, currency: 'BTC/ETH', exchange: 'Bittrex', price: '0.0000065'},
@@ -39,7 +40,7 @@ export const store = new Vuex.Store({
                 console.log(error)
             });
         },
-        
+
         getUserInfo({commit}) {
             Vue.http.get('/get-user-info')
             .then((response) => {
@@ -58,9 +59,9 @@ export const store = new Vuex.Store({
                     console.log(response)
                     commit('SET_EMAIL', payload);
                     commit('CHANGE_NOTIFICATION', true);
-                    commit('UPDATE_INFORMATION_TEXT', true);
+                    commit('UPDATE_INFORMATION_TEXT', response);
                 } else {
-                    commit('UPDATE_INFORMATION_TEXT', false);
+                    commit('UPDATE_INFORMATION_TEXT', response);
                     console.log('error');
                     console.log(response);
                 }
@@ -86,10 +87,11 @@ export const store = new Vuex.Store({
             state.showNotification = payload;
         },
         UPDATE_INFORMATION_TEXT(state, payload) {
-            if (payload) {
-                state.informationText = 'Profile successfully updated'
+            state.informationText = payload.body.message;
+            if (payload.body.status) {
+                state.alertColor = 'success';
             } else {
-                state.informationText = 'Something went wrong'
+                state.alertColor = 'error';
             }
         }
     },
@@ -106,10 +108,10 @@ export const store = new Vuex.Store({
         email(state) {
             return state.email;
         },
-        informationText(state){
+        informationText(state) {
             return state.informationText;
         },
-        showNotification(state){
+        showNotification(state) {
             return state.showNotification;
         }
     },

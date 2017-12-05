@@ -4,7 +4,7 @@
             <v-container fluid>
                 <v-layout row wrap>
                     <v-flex xs12 sm6 offset-sm3>
-                        <v-alert v-if="showNotification" color="info" :value="true">
+                        <v-alert v-if="showNotification" :color="alertColor" :value="true">
                             {{ informationText }}
                         </v-alert>
                         <v-flex>
@@ -15,8 +15,8 @@
                                     v-model="email"
                                     required
                                     :type="password"
-                                    append-icon="chat_bubble"
                                     :rules="[validEmail]"
+                                    append-icon="chat_bubble"
                             ></v-text-field>
                         </v-flex>
                         <v-flex>
@@ -79,6 +79,9 @@
             },
             showNotification(){
              return this.$store.getters.showNotification;
+            },
+            alertColor(){
+                return this.$store.state.alertColor;
             },
             email: {
                 get() {

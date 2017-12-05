@@ -32001,6 +32001,7 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
         email: '',
         showNotification: false,
         informationText: '',
+        alertColor: '',
         alerts: [{ id: 1, currency: 'BTC/USD', exchange: 'Bittrex', price: '1200 ' }, { id: 2, currency: 'BTC/ETH', exchange: 'Bittrex', price: '0.0000065' }, { id: 3, currency: 'BTC/XRP', exchange: 'Bittrex', price: '0.00054 ' }, { id: 4, currency: 'BTC/NEO', exchange: 'Bittrex', price: '0.0123658 ' }, { id: 5, currency: 'BTC/OMG', exchange: 'Bittrex', price: '0.1512564 ' }, { id: 6, currency: 'BTC/STRAT', exchange: 'Bittrex', price: '0.00012 ' }, { id: 7, currency: 'BTC/XLM', exchange: 'Bittrex', price: '0.004412 ' }, { id: 8, currency: 'BTC/BCC', exchange: 'Bittrex', price: '0.313412 ' }, { id: 9, currency: 'BTC/VIA', exchange: 'Bittrex', price: '0.499312 ' }],
         alertsInfo: [{
             id: 1,
@@ -32038,9 +32039,9 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
                     console.log(response);
                     commit('SET_EMAIL', payload);
                     commit('CHANGE_NOTIFICATION', true);
-                    commit('UPDATE_INFORMATION_TEXT', true);
+                    commit('UPDATE_INFORMATION_TEXT', response);
                 } else {
-                    commit('UPDATE_INFORMATION_TEXT', false);
+                    commit('UPDATE_INFORMATION_TEXT', response);
                     console.log('error');
                     console.log(response);
                 }
@@ -32065,10 +32066,11 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
             state.showNotification = payload;
         },
         UPDATE_INFORMATION_TEXT: function UPDATE_INFORMATION_TEXT(state, payload) {
-            if (payload) {
-                state.informationText = 'Profile successfully updated';
+            state.informationText = payload.body.message;
+            if (payload.body.status) {
+                state.alertColor = 'success';
             } else {
-                state.informationText = 'Something went wrong';
+                state.alertColor = 'error';
             }
         }
     },
@@ -35313,6 +35315,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         showNotification: function showNotification() {
             return this.$store.getters.showNotification;
         },
+        alertColor: function alertColor() {
+            return this.$store.state.alertColor;
+        },
 
         email: {
             get: function get() {
@@ -35355,7 +35360,7 @@ var render = function() {
                       _vm.showNotification
                         ? _c(
                             "v-alert",
-                            { attrs: { color: "info", value: true } },
+                            { attrs: { color: _vm.alertColor, value: true } },
                             [
                               _vm._v(
                                 "\n                        " +
@@ -35376,8 +35381,8 @@ var render = function() {
                               id: "mail",
                               required: "",
                               type: _vm.password,
-                              "append-icon": "chat_bubble",
-                              rules: [_vm.validEmail]
+                              rules: [_vm.validEmail],
+                              "append-icon": "chat_bubble"
                             },
                             model: {
                               value: _vm.email,
