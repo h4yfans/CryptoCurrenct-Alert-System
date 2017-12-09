@@ -65,12 +65,13 @@ export const store = new Vuex.Store({
             })
         },
         getCurrencies({commit}) {
+
             Vue.http.get('https://bittrex.com/api/v1.1/public/getmarketsummaries')
-            .then(response => {
+            .then((response) => {
                 console.log(response);
                 commit('SET_CURRENCIES', response.body.result);
-            }).catch(error => {
-
+            }).catch((error) => {
+                console.log(error);
             })
         }
     },

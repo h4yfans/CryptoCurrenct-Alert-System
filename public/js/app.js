@@ -11897,6 +11897,8 @@ Vue.use(__WEBPACK_IMPORTED_MODULE_2_vue_router__["a" /* default */]);
 
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.head.querySelector('meta[name="csrf-token"]').content;
 
+Vue.http.options.emulateJSON = true;
+Vue.http.options.crossOrigin = true;
 Vue.component('sidebar', __WEBPACK_IMPORTED_MODULE_4__components_home_includes_Sidebar_vue___default.a);
 Vue.component('home', __WEBPACK_IMPORTED_MODULE_5__components_home_Index_vue___default.a);
 
@@ -32047,10 +32049,13 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
         getCurrencies: function getCurrencies(_ref4) {
             var commit = _ref4.commit;
 
+
             __WEBPACK_IMPORTED_MODULE_0_vue___default.a.http.get('https://bittrex.com/api/v1.1/public/getmarketsummaries').then(function (response) {
                 console.log(response);
                 commit('SET_CURRENCIES', response.body.result);
-            }).catch(function (error) {});
+            }).catch(function (error) {
+                console.log(error);
+            });
         }
     },
     mutations: {

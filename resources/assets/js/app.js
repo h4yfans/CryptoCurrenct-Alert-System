@@ -19,8 +19,13 @@ Vue.use(VueRouter)
 
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.head.querySelector('meta[name="csrf-token"]').content
 
+
+
+Vue.http.options.emulateJSON = true
+Vue.http.options.crossOrigin = true
 Vue.component('sidebar', Sidebar);
 Vue.component('home', Index);
+
 
 const routes = [
     {title: 'My Alerts', icon: 'home', path: '/my-alerts', component: MyAlerts},

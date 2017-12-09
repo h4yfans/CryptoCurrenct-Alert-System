@@ -11,17 +11,18 @@
 |
 */
 
+Route::group(['middleware' => 'cors'], function () {
+    Route::group(['middleware' => ['auth']], function () {
+        Route::get('/', function () {
+            return view('home');
+        });
 
-Route::group(['middleware' => ['auth']], function () {
-    Route::get('/', function () {
-        return view('home');
+        Route::get('/check-auth', 'AuthController@checkAuth');
+        Route::get('/get-user-info', 'AuthController@getAuthInfo');
+        Route::post('/change-auth-info', 'AuthController@setAuthInfo');
+
     });
+    Auth::routes();
 
-    Route::get('/check-auth', 'AuthController@checkAuth');
-    Route::get('/get-user-info', 'AuthController@getAuthInfo');
-    Route::post('/change-auth-info', 'AuthController@setAuthInfo');
-
+    Route::get('/home', 'HomeController@index')->name('home');
 });
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
